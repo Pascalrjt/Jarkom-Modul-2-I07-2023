@@ -130,78 +130,59 @@ Save the file and exit the nano editor by pressing Ctrl + X, followed by Y to co
 ```sh
 cat /etc/resolv.conf
 ```
-- Then we add the following command to set the nameserver to 192.168.122.1 by running:
+- Then we add the following command to set the nameserver to `192.168.122.1` by adding it to the `.bashrc` file of every other `ubuntu` that isn't the router using the `nano ~/.bashrc` command with:
 ```sh
 echo nameserver 192.168.122.1 > /etc/resolv.conf
 ```
 
-### 1B
-```
-Berapakah acknowledge number (raw) pada packet yang menunjukkan aktivitas tersebut? 
-```
-Solution:<br>
-
-![1 1 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/4ef19f3f-f46e-443c-9a72-7525e6805ec4)
-![1 1 2 ab](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/36340239-af55-4965-ad03-cff1c005d228)
-![1 1 3 b](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/52595129-aab0-4270-9b27-efc6ad813ed3)
-
-Explanation:
-
-- Filter with this format `ftp`
-- On the `Info` column, find data with this type `Request: STOR ...`
-- Look into _packet details_ window and drop down the `Transmission Control Protocol, ...` option
-- Find Acknowledgment number (raw), in this case the number is `1044861039`
-
-### 1C
-
-```
-Berapakah sequence number (raw) pada packet yang menunjukkan response dari aktivitas tersebut?
-```
-
-Solution:<br>
-
-![1 1 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/4ef19f3f-f46e-443c-9a72-7525e6805ec4)
-![1 1 2 cd](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/e0d3f036-887e-4adb-8b34-389ec4f66a91)
-![1 1 3 c](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/e131b36c-a9f9-4c52-bc4d-d926aa767341)
-
-Explanation:
-
-- Filter with this format `ftp`
-- On the `Info` column, find data with this type `Responses: ...`. Make sure it is the response of the same data before.
-- Look into _packet details_ window and drop down the `Transmission Control Protocol, ...` option
-- Find Sequence number (raw), in this case the number is `1044861039`
-
-### 1D
-
-```
-Berapakah acknowledge number (raw) pada packet yang menunjukkan response dari aktivitas tersebut?
-```
-Solution:<br>
-
-![1 1 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/4ef19f3f-f46e-443c-9a72-7525e6805ec4)
-![1 1 2 cd](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/e0d3f036-887e-4adb-8b34-389ec4f66a91)
-![1 1 3 d](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/425ed861-1a5c-48cf-a8ea-b50322981a6d)
-
-Explanation:
-
-- Filter with this format `ftp`
-- On the `Info` column, find data with this type `Responses: ...`. Make sure it is the response of the same data before.
-- Look into _packet details_ window and drop down the `Transmission Control Protocol, ...` option
-- Find Sequence number (raw), in this case the number is `258040696`
-
 ## Number 2
 ```
-Sebutkan web server yang digunakan pada portal praktikum Jaringan Komputer!
+Buatlah website utama dengan akses ke arjuna.yyy.com dengan alias www.arjuna.yyy.com dengan yyy merupakan kode kelompok.
 ```
 Solution:<br>
-![1 2 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/008a6282-aa5d-4255-8da3-11e4e88bce52)
-![1 2 2](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/7dd217c1-b90a-418c-b467-a06eb24cb725)
+![arjuna.I07.com](https://cdn.discordapp.com/attachments/824131614073683968/1161349543913345084/image.png?ex=6537fa0c&is=6525850c&hm=1f1ffd0016534c29338295a66e58651d69840a760252a86b73cd894a696e06bb&)
+
+![/etc/bind/named.conf.local](https://cdn.discordapp.com/attachments/824131614073683968/1161349900517265458/image.png?ex=6537fa61&is=65258561&hm=aa0f711c0a5e79c400c693bd437e947fc2b65a64f88890a9580ac885eb7e804d&)
+
+![number2terminal](https://cdn.discordapp.com/attachments/824131614073683968/1161350203064983582/image.png?ex=6537faa9&is=652585a9&hm=031f91c2b724b2f4c0f3b57b2347524b19345d0d06e7df7e11a8055da0257701&)
 
 Explanation:
-- Apply this filter in Wireshark `http.response`
-- Choose or Click one of the data that has `HTTP` on `Protocol` column
-- In packet details, drop down the `Hypertext Transfer Protocol` then see the value after `Server`
-- The answer will be `gunicorn`
+- We first run `apt update` and `apt install bind9 -y` to install bind9 in `YushistiraDNSMaster`
+- We then edit `the named.conf.local` file in `root` directory with the  command
+```sh
+nano /root/named.conf.local
+```
+- We then add
+```sh
+zone "arjuna.I07.com" {
+	type master;
+	file "/etc/bind/jarkom/arjuna.I07.com";
+};
+```
+to the end of the `the named.conf.local` file
+- Afterwards we make a folder `jarkom` in the `root`directory with the command `mkdir jarkom` and the copy the  the `db.local` file in the `/etc/bind` directory to the `jarkom` folder in the in the `root` directory and rename it arjuna.I07.com with the command
+```sh
+cp /etc/bind/db.local /root/jarkom/arjuna.I07.com
+```
+- We then edit the `arjuna.I07.com` file changing some of the contents to `arjuna.I07.com.` along with adding the IP of `YushistiraDNSMaster`; `10.62.2.2` and adding another line
+```sh
+www     IN      CNAME       arjuna.I07.com.
+```
+to make an alias `www.arjuna.I07.com`
+
+- We then edit the `.bashrc` file with the command `nano ~/.bashrc` in `WerkudaDNSSlave`
+```sh
+echo nameserver 10.62.2.2 > /etc/resolv.conf
+```
+to alter the `/etc/resolv.conf` every time the system is restarted.
+- We test its functionality this by running 
+```sh
+host -t CNAME www.arjuna.I07.com
+```
+to see if `www.arjuna.I07.com` is and alias for `arjuna.I07.com` and 
+```sh
+ping www.arjuna.I07.com -c 5
+```
 
 ## Number 3
 ```
