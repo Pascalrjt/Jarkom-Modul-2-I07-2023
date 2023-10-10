@@ -160,7 +160,7 @@ zone "arjuna.I07.com" {
 };
 ```
 to the end of the `the named.conf.local` file
-- Afterwards we make a folder `jarkom` in the `root`directory with the command `mkdir jarkom` and the copy the  the `db.local` file in the `/etc/bind` directory to the `jarkom` folder in the in the `root` directory and rename it arjuna.I07.com with the command
+- Afterwards we make a folder `jarkom` in the `root`directory with the command `mkdir jarkom` and the copy the  the `db.local` file in the `/etc/bind` directory to the `jarkom` folder in the in the `root` directory and rename it `arjuna.I07.com` with the command
 ```sh
 cp /etc/bind/db.local /root/jarkom/arjuna.I07.com
 ```
@@ -186,32 +186,45 @@ ping www.arjuna.I07.com -c 5
 
 ## Number 3
 ```
-Dapin sedang belajar analisis jaringan. Bantulah Dapin untuk mengerjakan soal berikut:
+Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
 ```
 Solution:<br>
-![1 3 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/ce90c79e-ec99-4845-8863-b60d3fdfea86)
-![1 3 2](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/b71734a4-7665-4113-afd4-7395e61f4484)
+![/etc/bind/named.conf.local](https://cdn.discordapp.com/attachments/824131614073683968/1161357806688026625/image.png?ex=653801be&is=65258cbe&hm=a7d88f73c98c85c660ef7bb5ea42bb162a9106cbb4810114bed70576d0b208f9&)
 
-### 3A
+![abimanyu.I07.com](https://cdn.discordapp.com/attachments/824131614073683968/1161357876636430497/image.png?ex=653801ce&is=65258cce&hm=51ad7d2195f472f4706e25cb5be0dcdf63c47ed799803b252ce3259e21aae5a2&)
 
-```
-Berapa banyak paket yang tercapture dengan IP source maupun destination address adalah 239.255.255.250 dengan port 3702?
-```
-Explanation:
-- There will be two filter, first `ip.addr == 239.255.255.250` and `udp.port == 3702`
-- Combine those filter with `&&` in Whiteshark filter
-- Count the data after filtering
-- The answer will be `21`
-
-### 3B
-```
-Protokol layer transport apa yang digunakan?
-```
+![number3terminal](https://cdn.discordapp.com/attachments/824131614073683968/1161357920764690603/image.png?ex=653801d9&is=65258cd9&hm=9b8c4412f45e25e5d1865a88021e5a9e3d7dfe6178caf26d442d3ff03ca70178&)
 
 Explanation:
-- Using the same filter previously, see the `Protocol` column 
-- All the data that shown will be `UDP`
-
+- We edit `the named.conf.local` file in `root` directory with the  command
+```sh
+nano /root/named.conf.local
+```
+- We then add
+```sh
+zone "abimanyu.I07.com" {
+	type master;
+	file "/etc/bind/jarkom/abimanyu.I07.com";
+};
+```
+to the end of the `the named.conf.local` file
+- Afterwards we copy the  the `db.local` file in the `/etc/bind` directory to the `jarkom` folder in the in the `root` directory and rename it `abimanyu.I07.com` with the command
+```sh
+cp /etc/bind/db.local /root/jarkom/abimanyu.I07.com
+```
+- We then edit the `abimanyu.I07.com` file changing some of the contents to `abimanyu.I07.com.` along with adding the IP of `YushistiraDNSMaster`; `10.62.2.2` and adding another line
+```sh
+www     IN      CNAME       abimanyu.I07.com.
+```
+to make an alias `www.abimanyu.I07.com`
+- We test its functionality this by running 
+```sh
+host -t CNAME www.abimanyu.I07.com
+```
+to see if `www.abimanyu.I07.com` is and alias for `abimanyu.I07.com` and 
+```sh
+ping www.abimanyu.I07.com -c 5
+```
 ## Number 4
 ```
 Berapa nilai checksum yang didapat dari header pada paket nomor 130?
