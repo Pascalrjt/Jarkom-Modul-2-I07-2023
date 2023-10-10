@@ -56,12 +56,85 @@ iface eth0 inet static
     gateway 10.62.1.1
 ```
 
+### ArjunaLoadBalancer
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.1.4
+    netmask 255.255.255.0
+    gateway 10.62.1.1
+```
+
+### WisanggeniWebServer
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.3.2
+    netmask 255.255.255.0
+    gateway 10.62.3.1
+```
+
+### AbimanyuWebServer
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.3.3
+    netmask 255.255.255.0
+    gateway 10.62.3.1
+```
+
+### PrabukusumaWebServer
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.3.4
+    netmask 255.255.255.0
+    gateway 10.62.3.1
+```
+
+### WerkudaDNSSlave
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.2.3
+    netmask 255.255.255.0
+    gateway 10.62.2.1
+```
+
+### YudhistiraDNSMaster
+
+```sh
+auto eth0
+iface eth0 inet static
+    address 10.62.2.2
+    netmask 255.255.255.0
+    gateway 10.62.2.1
+```
+
 Explanation:
 
-- Filter with this format `ftp`
-- On the `Info` column, find data with this type `Request: STOR ...`
-- Look into _packet details_ window and drop down the `Transmission Control Protocol, ...` option
-- Find Acknowledgment number (raw), in this case the number is `25804667`
+- Add the following command to the /root/.bashrc file using the nano text editor on the "Route" node:
+```sh
+nano /root/.bashrc
+```
+Inside the nano editor, add the following line at the end of the file:
+```sh
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s 10.62.0.0/16
+```
+Save the file and exit the nano editor by pressing Ctrl + X, followed by Y to confirm the changes, and then Enter.
+- To find the name server, we run the following command on the "Route" node:
+```sh
+cat /etc/resolv.conf
+```
+- Then we add the following command to set the nameserver to 192.168.122.1 by running:
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+```
 
 ### 1B
 ```
