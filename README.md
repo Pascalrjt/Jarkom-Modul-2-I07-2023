@@ -117,7 +117,6 @@ iface eth0 inet static
 ```
 
 Explanation:
-
 - Add the following command to the /root/.bashrc file using the nano text editor on the "Route" node:
 ```sh
 nano /root/.bashrc
