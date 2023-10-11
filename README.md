@@ -227,71 +227,56 @@ ping www.abimanyu.I07.com -c 5
 ```
 ## Number 4
 ```
-Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
+Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
 ```
 Solution:<br>
 
-![Number4_image](https://media.discordapp.net/attachments/824131614073683968/1154435177255288943/Screenshot_2023-09-18_205640.png?width=681&height=671)  
+![abimanyu.I08.com](https://cdn.discordapp.com/attachments/824131614073683968/1161658945862127666/image.png?ex=65391a33&is=6526a533&hm=b202ac54b4cc2c26690518b291fcb1059da59e4d4f6ea2b40a0b67695ed2dcd0&) 
 
-```sh
-Frame 130: 196 bytes on wire (1568 bits), 196 bytes captured (1568 bits) on interface \Device\NPF_{3F96C891-C513-447E-9B66-6C81A5C93077}, id 0
-Ethernet II, Src: 02:e4:90:54:f3:42 (02:e4:90:54:f3:42), Dst: zte_e8:05:1c (28:c8:7c:e8:05:1c)
-Internet Protocol Version 4, Src: 192.168.1.19, Dst: 74.125.130.139
-User Datagram Protocol, Src Port: 57296, Dst Port: 443
-    Source Port: 57296
-    Destination Port: 443
-    Length: 162
-    Checksum: 0x18e5 [unverified]
-    [Checksum Status: Unverified]
-    [Stream index: 9]
-    [Timestamps]
-    UDP payload (154 bytes)
-QUIC IETF
-QUIC IETF
-```
+![number4result](https://cdn.discordapp.com/attachments/824131614073683968/1161659039420252190/image.png?ex=65391a49&is=6526a549&hm=b4e4dc0860bfb8ccaf24bc16010a8afbc9e054b7d9c7c89fdd82d0a37432c86a&)
+
 Explanation:
-- First go to the Header number 130, afterwards double click it.
-- Then click on the `User Datagram Protocol`, it will open a drop down tab.
-- There we can search for the `Checksum value`, which in this case is `0x18e5` 
+- We edit the `abimanyu.I07.com` file in `YudhistiraDNSMaster`, adding a new line
+```sh
+parikesit   IN  A   10.62.2.2   ; IP YudhistiraDNSMaster
+```
+- We can then test it by running `host -t A parikesit.abimanyu.I07.com` and `ping parikesit.abimanyu.I07.com -c 5` in `WerkudaraDNSSlave`
 
 ## Number 5
 ```
-Elshe menemukan suatu file packet capture yang menarik. Bantulah Elshe untuk menganalisis file packet capture tersebut.
-```
-### 5A
-
-```
-Berapa banyak packet yang berhasil di capture dari file pcap tersebut?
+Buat juga reverse domain untuk domain utama. (Abimanyu saja yang direverse)
 ```
 Solution:<br>
-```sh
-//No current solution
-```
-Explanation:
-- `No current explanation` 
+![named.conf.local](https://media.discordapp.net/attachments/824131614073683968/1161660627153059911/image.png?ex=65391bc4&is=6526a6c4&hm=acaa5e07ab49cd340289bac1baef8c7d4ed0cdaa65fac25f3992722d97df9816&=)
 
-### 5B
-```
-Port berapakah pada server yang digunakan untuk service SMTP?
-```
-Solution:<br>
-```sh
-//No current solution
-```
-Explanation:
-- `No current explanation` 
+![2.62.10.in-addr.arpa](https://media.discordapp.net/attachments/824131614073683968/1161660721327775886/image.png?ex=65391bda&is=6526a6da&hm=b0840a51eeb20bd7ddec3334e9a83c176b78738a2421bd5053dc9e6c798e77b5&=)
 
-### 5C
+![werkudara.bashrc](https://media.discordapp.net/attachments/824131614073683968/1161660761026854932/image.png?ex=65391be4&is=6526a6e4&hm=c9a0e3f7571c23ff83fa9e5c655c5f149671ed6f90fc88e65c92d808fc569262&=)
 
-```
-Dari semua alamat IP yang tercapture, IP berapakah yang merupakan public IP?
-```
-Solution:<br>
-```sh
-//No current solution
-```
+![number5result](https://media.discordapp.net/attachments/824131614073683968/1161660811241082930/image.png?ex=65391bf0&is=6526a6f0&hm=8b30511da98bb7b90060eda4d41cb9857671fc835f9177719423f09c294b7110&=)
+
 Explanation:
-- `No current explanation` 
+- We edit the `named.conf.local` file in the `/etc/bind/` directory adding 
+```sh
+zone "2.62.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/jarkom/2.62.10.in-addr.arpa";
+};
+```
+with `2.62.10` being the reverse of our IP `10.62.2`.
+- Afterwards we create the file `2.62.10.in-addr.arpa` in the `/etc/bind/jarkom/` direcory which is based on the `db.local` file and altering it by replacing some values with `abimanyu.I07.com` and adding
+```sh
+2.62.10.in-addr.arpa    IN  NS      abimanyu.I07.com.
+2                       IN  PTR     abimanyu.I07.com.
+```
+-  In `WerkudaraDNSMaster` we edit the `.bshrc` script to become
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf # to allow internet connection
+apt update
+apt-get install dnsutils -y
+echo nameserver 10.62.2.2 > /etc/resolv.conf    # to run the ping the YudhistiraDNSMaster
+```
+-  We are then able to test it by running `host -t PTR 10.62.2.2`
 
 ## Number 6
 ```
