@@ -227,7 +227,7 @@ ping www.abimanyu.I07.com -c 5
 ```
 ## Number 4
 ```
-Berapa nilai checksum yang didapat dari header pada paket nomor 130?
+Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
 ```
 Solution:<br>
 
