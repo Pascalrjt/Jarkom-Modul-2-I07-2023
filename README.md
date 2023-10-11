@@ -280,81 +280,157 @@ echo nameserver 10.62.2.2 > /etc/resolv.conf    # to run the ping the Yudhistira
 
 ## Number 6
 ```
-Seorang anak bernama Udin Berteman dengan SlameT yang merupakan seorang penggemar film detektif. sebagai teman yang baik, Ia selalu mengajak slamet untuk bermain valoranT bersama. suatu malam, terjadi sebuah hal yang tak terdUga. ketika udin mereka membuka game tersebut, laptop udin menunjukkan sebuah field text dan Sebuah kode Invalid bertuliskan "server SOURCE ADDRESS 7812 is invalid". ketika ditelusuri di google, hasil pencarian hanya menampilkan a1 e5 u21. jiwa detektif slamet pun bergejolak. bantulah udin dan slamet untuk menemukan solusi kode error tersebut.
+Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 ```
 Solution:<br>
 
 ```sh
-//No current solution
 ```
 
 Explanation:
-- `No current explanation` 
 
 ## Number 7
 ```
-Berapa jumlah packet yang menuju IP 184.87.193.88?
+Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatlah subdomain khusus untuk perang yaitu baratayuda.abimanyu.yyy.com dengan alias www.baratayuda.abimanyu.yyy.com yang didelegasikan dari Yudhistira ke Werkudara dengan IP menuju ke Abimanyu dalam folder Baratayuda.
 ```
 Solution:<br>
 
-![Number7_image](https://media.discordapp.net/attachments/906158395617320980/1154435868950548531/Screenshot_2023-09-18_193024.png)  
-
 ```sh
-ip.dst == 184.87.193.88
 ```
 
 Explanation:
-- Since the question asks for the packets that are  `menuju IP 184.87.193.88`, it means that the `destination` of the packets are `184.87.193.88`
-- `ip.dst` is for filtering the `IP destinations` which in this case is  `184.87.193.88`
-- Afterwards we count number of packets which are `6`
 
 ## Number 8
 ```
-Berikan kueri filter sehingga wireshark hanya mengambil semua protokol paket yang menuju port 80! (Jika terdapat lebih dari 1 port, maka urutkan sesuai dengan abjad)
+Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 ```
 Solution:<br>
-![1 8 1](https://github.com/Pascalrjt/Jarkom-Modul-1-I07-2023/assets/89951546/fd588b77-3340-4360-bc6b-9a46d1c5bed9)
 
 Explanation:
-- There will be two filter, first `tcp.dstport == 80` and `udp.dstport == 80`
-- Please note that after the dot, you need to include `dst` which stands for destination
-- Combine those two filter with `||`, so it will be  `tcp.dstport == 80 || udp.dstport == 80`
 
 ## Number 9
 ```
-Berikan kueri filter sehingga wireshark hanya mengambil paket yang berasal dari alamat 10.51.40.1 tetapi tidak menuju ke alamat 10.39.55.34!
+Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 ```
 Solution:<br>
 
-![Number9_image](https://media.discordapp.net/attachments/824131614073683968/1154435176940711996/Screenshot_2023-09-18_203242.png?width=627&height=671)
-
 ```sh
-ip.src == 10.51.40.1 && ip.dst != 10.39.55.34
 ```
 
 Explanation:
-- The question asks for packets that `berasal dari alamat 10.51.40.1 tetapi tidak menuju ke alamat 10.39.55.34` which means that it is looking for packets which `source` is IP `10.51.40.1` and the `destination` is not IP `10.39.55.34` 
-- `ip.src` is for filtering the `IP sources` which in this case is  `10.51.40.1`
-- `ip.dst` is for filtering the `IP desinations` which in this case is NOT `10.39.55.34` which is denoted by the `!=`.
 
 ## Number 10
 ```
-Sebutkan kredensial yang benar ketika user mencoba login menggunakan Telnet
+Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
+    - Prabakusuma:8001
+    - Abimanyu:8002
+    - Wisanggeni:8003
 ```
 
 Solution:<br>
 
-![Number10_image](https://media.discordapp.net/attachments/824131614073683968/1154435176592592996/Screenshot_2023-09-18_202027.png)
-
 ```sh
-Frame 87: 92 bytes on wire (736 bits), 92 bytes captured (736 bits) on interface tap2, id 0
-Ethernet II, Src: 0c:c8:32:27:00:00 (0c:c8:32:27:00:00), Dst: 26:82:4f:e4:c2:07 (26:82:4f:e4:c2:07)
-Internet Protocol Version 4, Src: 172.16.0.4, Dst: 172.16.0.254
-Transmission Control Protocol, Src Port: 23, Dst Port: 57784, Seq: 13, Ack: 26, Len: 26
-Telnet
-    Data: dhafin:kesayangannyak0k0\r\n
 ```
 
 Explanation:
-- First we filter out with `telnet`
-- Then we browse the headers and look into the `Telnet` drop down tab until we find one where the data resembles a username and password which we find in `header number 87` and the login credentials are `dhafin:kesayangannyak0k0`
+
+### Number 11
+```
+Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abimanyu dengan web server www.abimanyu.yyy.com. Pertama dibutuhkan web server dengan DocumentRoot pada /var/www/abimanyu.yyy
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 12
+```
+Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abimanyu.yyy.com/home.
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 13
+```
+Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan pada /var/www/parikesit.abimanyu.yyy
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 14
+```
+Pada subdomain tersebut folder /public hanya dapat melakukan directory listing sedangkan pada folder /secret tidak dapat diakses (403 Forbidden).
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 15
+```
+Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode pada Apache. Error kode yang perlu diganti adalah 404 Not Found dan 403 Forbidden.
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 16
+```
+Buatlah suatu konfigurasi virtual host agar file asset www.parikesit.abimanyu.yyy.com/public/js menjadi 
+www.parikesit.abimanyu.yyy.com/js 
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 17
+```
+Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya dapat diakses melalui port 14000 dan 14400.
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 18
+```
+Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password “baratayudayyy” dengan yyy merupakan kode kelompok. Letakkan DocumentRoot pada /var/www/rjp.baratayuda.abimanyu.yyy.
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 19
+```
+Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihkan ke www.abimanyu.yyy.com (alias)
+```
+
+Solution:<br>
+
+```sh
+```
+
+### Number 20
+```
+Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan banyak gambar gambar random, maka ubahlah request gambar yang memiliki substring “abimanyu” akan diarahkan menuju abimanyu.png.
+```
+
+Solution:<br>
+
+```sh
+```
