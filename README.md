@@ -283,11 +283,38 @@ echo nameserver 10.62.2.2 > /etc/resolv.conf    # to run the ping the Yudhistira
 Agar dapat tetap dihubungi ketika DNS Server Yudhistira bermasalah, buat juga Werkudara sebagai DNS Slave untuk domain utama.
 ```
 Solution:<br>
+![yudhistira.named.conf.local](https://cdn.discordapp.com/attachments/824131614073683968/1161819515810750504/image0.jpg?ex=6539afbe&is=65273abe&hm=722c8162f1c8f0c61f90b2b8231bcbf95ab80991e7cb96f5cf8a72cc7bcc3ca1&)
 
-```sh
-```
+![werkudara.named.conf.local](https://cdn.discordapp.com/attachments/824131614073683968/1161819654302470214/image0.jpg?ex=6539afdf&is=65273adf&hm=30d6a7172fec4476508e0cc35a50129faf77e386a7b4402b4c9b55b528ba9e0c&)
+
+![werkudara.restart.bind](https://cdn.discordapp.com/attachments/824131614073683968/1161821549171581038/IMG_0646.png?ex=6539b1a2&is=65273ca2&hm=ef421fd6bb6934221db3bbb3125d1a2bd57944d1cb24be6ff231c7724e197f6d&)
+
+![nakulaclient.test](https://cdn.discordapp.com/attachments/824131614073683968/1161821700963434496/image0.jpg?ex=6539b1c7&is=65273cc7&hm=c0f7162cc4960df6744997119c4651cc0d2385595840a6385685654506481cb5&)
 
 Explanation:
+- First we edit `abimanyu.I07.com` zone in the `named.conf.local` file in YudhistiraDNSMaster adding
+```sh  
+notify yes;
+also-notify { 10.62.2.3; }; // IP WerkudaraDNSSlave
+also-transfer { 10.62.2.3; }; // IP WerkudaraDNSSlave
+```
+- After this we reload bind9 with the command `service bind9 restart`
+- We then edit the `named.conf.local` file in `WerkudaraDNSSlave` adding
+```sh
+zone "abimanyu.I07.com"  {
+  type slave;
+  masters { 10.62.2.2; }; // IP YudhistiraDNSMaster
+  file "/var/lib/bind/abimanyu.I07.com"
+}  
+```
+- Then we restart the bind9 with the command `service bind9 restart` in `WerkudaraDNSSlave`
+- In order to test we go to `NakulaClient` and edit the `resolv.conf` file with the command `nano /etc/resolv.conf` and add
+```sh
+nameserver 10.62.2.2 // IP YudhistiraDNSMaster
+nameserver 10.62.2.3 // IP WerkudaraDNSSlave
+```
+- Then we stop bind9 in `YudhistiraDNSMaster` with the command `service bind9 stop`
+- And finally we run `ping abimanyu.I07.com -c 5` in `NakulaClient`
 
 ## Number 7
 ```
