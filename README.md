@@ -352,6 +352,16 @@ zone "baratayuda.abimanyu.I07.com"  {
 };
 ```
 - We also edit `named.conf.options` in `WerkudaraDNSSlave`, commenting `dnssec-validation auto;` and adding `allow-query{any;};` in the next line.
+- We then make the directory `delegasi` with in the `/etc/bind/` directory with the command `mkdir /etc/bind/delegasi` and copy `db.local` there and renaming it `baratayuda.abimanyu.I07.com` with the command `cp /etc/bind/db.local /etc/bind/delegasi/baratayuda.abimanyu.I07.com`
+- We then edit `baratayuda.abimanyu.I07.com`, changing `.local.` and `root.localhost.` to `baratayuda.abimanyu.I07.com` and `root.baratayuda.abimanyu.I07.com.`
+- We also add
+```sh
+@           IN      NS      baratayuda.abimanyu.I07.com.
+@           IN      A       10.62.2.3       ; IP WerkudaraDNSSlave
+www         IN      CNAME   baratayuda.abimanyu.I07.com.
+@           IN      A       10.62.2.3       ; IP WerkudaraDNSSlave
+```
+to `baratayuda.abimanyu.I07.com`
 - Afterwards we reload bind9 in both clients by running `service bind9 restart` in both `YudhistiraDNSMaster` and `WerkudaraDNSSlave`.
 - To test it, we go to `NakulaClient` and run `ping www.baratayuda.abimanyu.I07.com -c  5`
 
@@ -360,8 +370,16 @@ zone "baratayuda.abimanyu.I07.com"  {
 Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
 ```
 Solution:<br>
+![werkudara.baratayuda.abimanyu.I07.com](https://cdn.discordapp.com/attachments/824131614073683968/1161854639298322523/Screenshot_2023-10-11_181953.png?ex=6539d074&is=65275b74&hm=3e6d2414c0eaa4b035e5877fc413343cd321c21939fd6c39c287591762a6350d&)
+
+![nakulaclient.test](https://media.discordapp.net/attachments/824131614073683968/1161854670390689842/Screenshot_2023-10-11_181753.png?ex=6539d07b&is=65275b7b&hm=5c83a7c334e68f5fd43fb4c009af85a3cee0ed1c4ec9aad0043c8ad19d7f3c6d&=)
 
 Explanation:
+- We first edit `baratayuda.abimanyu.I07.com` in `WerkudaraDNSSlave` adding
+```sh
+rtp         IN      A       10.62.2.3       ; IP WerkudaraDNSSlave
+```
+- To test it, we go to `NakulaClient` and run `ping rtp.baratayuda.abimanyu.I07.com -c  5`
 
 ## Number 9
 ```
@@ -373,6 +391,7 @@ Solution:<br>
 ```
 
 Explanation:
+- First we edit the baratayuda.abimanyu.I07.com
 
 ## Number 10
 ```
