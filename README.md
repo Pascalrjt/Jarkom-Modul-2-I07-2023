@@ -184,6 +184,21 @@ to see if `www.arjuna.I07.com` is and alias for `arjuna.I07.com` and
 ping www.arjuna.I07.com -c 5
 ```
 
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+
 ## Number 3
 ```
 Dengan cara yang sama seperti soal nomor 2, buatlah website utama dengan akses ke abimanyu.yyy.com dan alias www.abimanyu.yyy.com.
@@ -225,6 +240,21 @@ to see if `www.abimanyu.I07.com` is and alias for `abimanyu.I07.com` and
 ```sh
 ping www.abimanyu.I07.com -c 5
 ```
+
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
 ## Number 4
 ```
 Kemudian, karena terdapat beberapa web yang harus di-deploy, buatlah subdomain parikesit.abimanyu.yyy.com yang diatur DNS-nya di Yudhistira dan mengarah ke Abimanyu.
@@ -241,6 +271,34 @@ Explanation:
 parikesit   IN  A   10.62.2.2   ; IP YudhistiraDNSMaster
 ```
 - We can then test it by running `host -t A parikesit.abimanyu.I07.com` and `ping parikesit.abimanyu.I07.com -c 5` in `WerkudaraDNSSlave`
+
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+- And in `WerkudaraDNSSlave`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install dnsutils -y
+apt install bind9 -y
+
+cp named.conf.local /etc/bind/named.conf.local
+cp named/conf.option /etc/bind/named.conf.options
+cp -r /root/delegasi /etc/bind
+
+echo nameserver 10.62.2.2 > /etc/resolv.conf # IP YudhisitraDNSMaster
+```
 
 ## Number 5
 ```
@@ -277,6 +335,43 @@ apt-get install dnsutils -y
 echo nameserver 10.62.2.2 > /etc/resolv.conf    # to run the ping the YudhistiraDNSMaster
 ```
 -  We are then able to test it by running `host -t PTR 10.62.2.2`
+
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster` 
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+- And in `WerkudaraDNSSlave`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install dnsutils -y
+apt install bind9 -y
+
+cp named.conf.local /etc/bind/named.conf.local
+cp named/conf.option /etc/bind/named.conf.options
+cp -r /root/delegasi /etc/bind
+
+echo nameserver 10.62.2.2 > /etc/resolv.conf # IP YudhisitraDNSMaster
+```
+- And `NakulaClient`
+```sh
+cp server /etc/resolv.conf
+```
+- Where `server` contains
+```sh
+nameserver 10.62.2.2 # IP YudhisitraDNSMaster
+nameserver 10.62.2.3 # IP WerkudaraDNSSlave
+```
 
 ## Number 6
 ```
@@ -315,6 +410,55 @@ nameserver 10.62.2.3 // IP WerkudaraDNSSlave
 ```
 - Then we stop bind9 in `YudhistiraDNSMaster` with the command `service bind9 stop`
 - And finally we run `ping abimanyu.I07.com -c 5` in `NakulaClient`
+
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster` 
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+- And in `WerkudaraDNSSlave`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install dnsutils -y
+apt install bind9 -y
+
+cp named.conf.local /etc/bind/named.conf.local
+cp named/conf.option /etc/bind/named.conf.options
+cp -r /root/delegasi /etc/bind
+
+echo nameserver 10.62.2.2 > /etc/resolv.conf # IP YudhisitraDNSMaster
+```
+- And `NakulaClient`
+```sh
+cp server /etc/resolv.conf
+```
+- Where `server` contains
+```sh
+nameserver 10.62.2.2 # IP YudhisitraDNSMaster
+nameserver 10.62.2.3 # IP WerkudaraDNSSlave
+```
+
+
+Aditional notes:
+- In order to run number 6 we need to alter `named.conf.local` in `/etc/bind/` with the command `nano /etc/bind/named.conf.local` and comment `zone "baratayuda.abimanyu.I07.com"` so it looks like this
+```sh
+//zone "baratayuda.abimanyu.I07.com"  {
+//    type master;
+//    file "/etc/bind/delegasi/baratayuda.abimanyu.I07.com";
+//};
+```
+- Afterwards run `service bind9 restart` and you are free to test
+- After doing number 6 `please reload all nodes` and you are free to proceed to number 7
 
 ## Number 7
 ```
@@ -365,6 +509,39 @@ to `baratayuda.abimanyu.I07.com`
 - Afterwards we reload bind9 in both clients by running `service bind9 restart` in both `YudhistiraDNSMaster` and `WerkudaraDNSSlave`.
 - To test it, we go to `NakulaClient` and run `ping www.baratayuda.abimanyu.I07.com -c  5`
 
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster` 
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+- And in `WerkudaraDNSSlave`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install dnsutils -y
+apt install bind9 -y
+
+cp named.conf.local /etc/bind/named.conf.local
+cp named/conf.option /etc/bind/named.conf.options
+cp -r /root/delegasi /etc/bind
+
+echo nameserver 10.62.2.2 > /etc/resolv.conf # IP YudhisitraDNSMaster
+```
+- And `NakulaClient`
+```sh
+nameserver 10.62.2.2 # IP YudhistiraDNSMaster
+nameserver 10.62.2.3 # IP WerkudaraDNSSlave
+```
+
 ## Number 8
 ```
 Untuk informasi yang lebih spesifik mengenai Ranjapan Baratayuda, buatlah subdomain melalui Werkudara dengan akses rjp.baratayuda.abimanyu.yyy.com dengan alias www.rjp.baratayuda.abimanyu.yyy.com yang mengarah ke Abimanyu.
@@ -381,20 +558,54 @@ rtp         IN      A       10.62.2.3       ; IP WerkudaraDNSSlave
 ```
 - To test it, we go to `NakulaClient` and run `ping rtp.baratayuda.abimanyu.I07.com -c  5`
 
+Scripting:
+- Since the only folder that remain after the VM is restared are those in root, we created a `.bashrc` file in `YudhistiraDNSMaster` 
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install bind9 -y
+
+cp -r /root/jarkom /etc/bind
+cp named.conf.local /etc/bind/named/conf.local
+cp named.conf.local /var/lib/bind/named/conf.local
+cp named.conf.options /etc/bind/named.conf.options
+
+service bind9 restart
+```
+- And in `WerkudaraDNSSlave`
+```sh
+echo nameserver 192.168.122.1 > /etc/resolv.conf
+apt update
+apt install dnsutils -y
+apt install bind9 -y
+
+cp named.conf.local /etc/bind/named.conf.local
+cp named/conf.option /etc/bind/named.conf.options
+cp -r /root/delegasi /etc/bind
+
+echo nameserver 10.62.2.2 > /etc/resolv.conf # IP YudhisitraDNSMaster
+```
+- And `NakulaClient`
+```sh
+nameserver 10.62.2.2 # IP YudhistiraDNSMaster
+nameserver 10.62.2.3 # IP WerkudaraDNSSlave
+```
+
 ## Number 9
 ```
 Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggunakan nginx sebagai webserver) yaitu Prabakusuma, Abimanyu, dan Wisanggeni. Lakukan deployment pada masing-masing worker.
 ```
 Solution:<br>
 
-![.bashc](https://media.discordapp.net/attachments/824131614073683968/1161854980588838942/Screenshot_2023-10-11_191701.png?ex=6539d0c5&is=65275bc5&hm=1eaae1014cc91e422b1fb674f0f8b5d3d1efcfe86649fa704600ddf0b1edbec5&=)
+![.bashc](https://media.discordapp.net/attachments/824131614073683968/1161980515109318716/image.png?ex=653a45af&is=6527d0af&hm=82d947774dbe63dedb283c9f6b5c1c39cdca901fe400f46738b2f2a4c131c543&=)
 
-![index.php](https://media.discordapp.net/attachments/824131614073683968/1161854826188124200/Screenshot_2023-10-11_191731.png?ex=6539d0a0&is=65275ba0&hm=77586f9309be2bb1217f56067aeaa0cd906c4b94b7efb99767828e9852190b7c&=)
+![jarkomm](https://cdn.discordapp.com/attachments/824131614073683968/1161980677173018725/image.png?ex=653a45d5&is=6527d0d5&hm=85678e3aa821f37d811aae894bc4185e279a91b1ae9a59c30d4f75e283edc3f0&)
 
-![jarkomm](https://media.discordapp.net/attachments/824131614073683968/1161854857209192448/Screenshot_2023-10-11_191750.png?ex=6539d0a8&is=65275ba8&hm=53f13e5492df8c21fd23cec99211b71fc5af0889c0dd246a6d9e63b33ebba7c2&=)
+![abimanyuwebserver.console1](https://media.discordapp.net/attachments/824131614073683968/1161980602149502987/image.png?ex=653a45c4&is=6527d0c4&hm=3a09bbe5be5fbc4c1a189252b90ac0fdcbb4c37d8304316cc97254eba44d1d73&=)
 
-![abimanyuwebserver.text](https://media.discordapp.net/attachments/824131614073683968/1161854980588838942/Screenshot_2023-10-11_191701.png?ex=6539d0c5&is=65275bc5&hm=1eaae1014cc91e422b1fb674f0f8b5d3d1efcfe86649fa704600ddf0b1edbec5&=)
+![abimanyuwebserver.console2](https://media.discordapp.net/attachments/824131614073683968/1161981025149263942/image.png?ex=653a4628&is=6527d128&hm=6a6f010815af62f6528b11182fccc93a61573803d8c3b60025c551fdf3fa6799&=)
 
+![10.62.2.2:80](https://media.discordapp.net/attachments/824131614073683968/1161984403908595753/image.png?ex=653a494e&is=6527d44e&hm=2fc759c3760f3c2d19f1ab76fa2e84c3e1b0285d6350ae7263d4206c330c3240&=)
 Explanation:
 - We first edit the `.bashrc` using the command `nano ~/.bashrc` and add
 ```sh
@@ -403,47 +614,20 @@ apt install nginx -y
 apt install nginx php php-fpm -y
 php -v
 
+cp -r /root/abimanyu.yyy.com /var/www/abimanyu.I07.com
+cp jarkomm /etc/nginx/sites/available
+ls -s /etc/nginx/sites-available/jarkom /etc/nginx/sites-enabled
+
 nginx -t # To check if configuration is properly done once completed
 ```
-- Then we make the directory `jarkom` in `/var/www` with the command ` mkdir /var/www/jarkom`
-- Then we make an `index.php` file there using the command `nano /var/www/jarkom/index.php` and insert 
-```php
- <?php
- echo "Halo, Kamu berada di AbimanyuWebServer"; // Name is based on whicheve client the index is made
- ?>
-```
-- We then make a file `jarkomm` in the directory `/etc/nginx/sites-available` with the command `nano /etc/nginx/sites-available/jarkomm` and insert
-```sh
- server {
+- We download the abimanyu.yyy.com zip using `wget` and then unzip it with `unzip`
+- The abimanyu.yyy.com file gets copied to `/var/www/` and renamed to `abimanyu.I07.com`
+- We also copy the `jarkomm` setup file to `/etc/nginx/sites/available`
+- In the `jarkomm` file the server name is set to `Abimanyu` and we set the root to `/var/www/abimanyu.I07.com` 
+- And we set a `symlink` ` ln -s /etc/nginx/sites-available/jarkomm /etc/nginx/sites-enabled`
 
- 	listen 80;
-
- 	root /var/www/jarkom;
-
- 	index index.php index.html index.htm;
- 	server_name _;
-
- 	location / {
- 			try_files $uri $uri/ /index.php?$query_string;
- 	}
-
- 	# pass PHP scripts to FastCGI server
- 	location ~ \.php$ {
- 	include snippets/fastcgi-php.conf;
- 	fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
- 	}
-
- location ~ /\.ht {
- 			deny all;
- 	}
-
- 	error_log /var/log/nginx/jarkom_error.log;
- 	access_log /var/log/nginx/jarkom_access.log;
- }
-```
-- Then we make a symlink with the command  `ln -s /etc/nginx/sites-available/jarkomm /etc/nginx/sites-enabled`
-- Afterwards we reload nginx with the commnad `service nginx restart`
-- We can test if the congiguration is correct with the command `nginx -t` but not in this case as it is in the `.bashrc` file so it will be run whenever the machine is restarted
+Aditional notes:
+- Sadly we failed the deployment as when ran `lynx 10.62.2.2:80` it resulted in `ERROR 403`
 
 ## Number 10
 ```
