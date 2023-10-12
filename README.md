@@ -305,7 +305,7 @@ zone "abimanyu.I07.com"  {
   type slave;
   masters { 10.62.2.2; }; // IP YudhistiraDNSMaster
   file "/var/lib/bind/abimanyu.I07.com"
-}  
+}; 
 ```
 - Then we restart the bind9 with the command `service bind9 restart` in `WerkudaraDNSSlave`
 - In order to test we go to `NakulaClient` and edit the `resolv.conf` file with the command `nano /etc/resolv.conf` and add
@@ -322,10 +322,38 @@ Seperti yang kita tahu karena banyak sekali informasi yang harus diterima, buatl
 ```
 Solution:<br>
 
-```sh
-```
+![yudhistira.abimanyu.I07.com](https://media.discordapp.net/attachments/824131614073683968/1161854529055244299/Screenshot_2023-10-11_175712.png?ex=6539d059&is=65275b59&hm=64d7854d7948c1e84264782c3b2b241fed3d76751c22042bbac93db80ffb2afa&=)
+
+![yudhistira.named.conf.local](https://media.discordapp.net/attachments/824131614073683968/1161854457957580921/Screenshot_2023-10-11_175629.png?ex=6539d048&is=65275b48&hm=56cb27a543e282d91e29731f9734795c7889d2dcdc528a692c704760a74e420d&=)
+
+![yudhistira.named.conf.options](https://media.discordapp.net/attachments/824131614073683968/1161854312515899433/Screenshot_2023-10-11_175505.png?ex=6539d026&is=65275b26&hm=026b98b6b802eeadba37935b4ea77a52099d78a896ccc8233126cb584ada42e0&=)
+
+![werkudara.named.conf.local](https://cdn.discordapp.com/attachments/824131614073683968/1161854270459625563/Screenshot_2023-10-11_175432.png?ex=6539d01c&is=65275b1c&hm=cb2141cfd0dc26dacf35b6e4eb48cff967595d643574ce7c784b0ad5bd02bbdd&)
+
+![werkudara.named.conf.options](https://media.discordapp.net/attachments/824131614073683968/1161854346435231765/Screenshot_2023-10-11_175557.png?ex=6539d02e&is=65275b2e&hm=a63e670436d96c5b18a138ba4dd0936664b0fcf063513b204d908cedace61b18&=)
+
+![werkudara.baratayuda.abimanyu.I07.com](https://media.discordapp.net/attachments/824131614073683968/1161854237387538432/Screenshot_2023-10-11_175325.png?ex=6539d014&is=65275b14&hm=53983026ffac78c7d1d5cabafa46e099f08aaeb60f3391575c36a27c033ef43e&=)
+
+![nakulaclient.test](https://media.discordapp.net/attachments/824131614073683968/1161854553063432272/Screenshot_2023-10-11_175100.png?ex=6539d05f&is=65275b5f&hm=efc240eaa70675125d76ad05358f1e0e272ae5ffabcad9bc9d67df4645d58c94&=)
 
 Explanation:
+- First we edit the `abimanyu.I07.com` file in `YudhistiraDNSMaster` adding
+```sh
+nsl         IN      A       10.62.2.3       ; IP WerkudaraDNSSlave
+baratayuda  IN      NS      nsl
+```
+- Then we edit `named.conf.options` in `YudhistiraDNSMaster`, commenting `dnssec-validation auto;` and adding `allow-query{any;};` in the next line.
+- We do not alter `named.conf.local` in `YudhistiraDNSMaster` as it has already been properly set up.
+- We then edit `named.conf.local` in `WerkudaraDNSSlave` adding
+```sh
+zone "baratayuda.abimanyu.I07.com"  {
+    type master;
+    file "/etc/bind/delegasi/baratayuda.abimanyu.I07.com";
+};
+```
+- We also edit `named.conf.options` in `WerkudaraDNSSlave`, commenting `dnssec-validation auto;` and adding `allow-query{any;};` in the next line.
+- Afterwards we reload bind9 in both clients by running `service bind9 restart` in both `YudhistiraDNSMaster` and `WerkudaraDNSSlave`.
+- To test it, we go to `NakulaClient` and run `ping www.baratayuda.abimanyu.I07.com -c  5`
 
 ## Number 8
 ```
