@@ -387,11 +387,63 @@ Arjuna merupakan suatu Load Balancer Nginx dengan tiga worker (yang juga menggun
 ```
 Solution:<br>
 
-```sh
-```
+![.bashc](https://media.discordapp.net/attachments/824131614073683968/1161854980588838942/Screenshot_2023-10-11_191701.png?ex=6539d0c5&is=65275bc5&hm=1eaae1014cc91e422b1fb674f0f8b5d3d1efcfe86649fa704600ddf0b1edbec5&=)
+
+![index.php](https://media.discordapp.net/attachments/824131614073683968/1161854826188124200/Screenshot_2023-10-11_191731.png?ex=6539d0a0&is=65275ba0&hm=77586f9309be2bb1217f56067aeaa0cd906c4b94b7efb99767828e9852190b7c&=)
+
+![jarkomm](https://media.discordapp.net/attachments/824131614073683968/1161854857209192448/Screenshot_2023-10-11_191750.png?ex=6539d0a8&is=65275ba8&hm=53f13e5492df8c21fd23cec99211b71fc5af0889c0dd246a6d9e63b33ebba7c2&=)
+
+![abimanyuwebserver.text](https://media.discordapp.net/attachments/824131614073683968/1161854980588838942/Screenshot_2023-10-11_191701.png?ex=6539d0c5&is=65275bc5&hm=1eaae1014cc91e422b1fb674f0f8b5d3d1efcfe86649fa704600ddf0b1edbec5&=)
 
 Explanation:
-- First we edit the baratayuda.abimanyu.I07.com
+- We first edit the `.bashrc` using the command `nano ~/.bashrc` and add
+```sh
+apt update
+apt install nginx -y
+apt install nginx php php-fpm -y
+php -v
+
+nginx -t # To check if configuration is properly done once completed
+```
+- Then we make the directory `jarkom` in `/var/www` with the command ` mkdir /var/www/jarkom`
+- Then we make an `index.php` file there using the command `nano /var/www/jarkom/index.php` and insert 
+```php
+ <?php
+ echo "Halo, Kamu berada di AbimanyuWebServer"; // Name is based on whicheve client the index is made
+ ?>
+```
+- We then make a file `jarkomm` in the directory `/etc/nginx/sites-available` with the command `nano /etc/nginx/sites-available/jarkomm` and insert
+```sh
+ server {
+
+ 	listen 80;
+
+ 	root /var/www/jarkom;
+
+ 	index index.php index.html index.htm;
+ 	server_name _;
+
+ 	location / {
+ 			try_files $uri $uri/ /index.php?$query_string;
+ 	}
+
+ 	# pass PHP scripts to FastCGI server
+ 	location ~ \.php$ {
+ 	include snippets/fastcgi-php.conf;
+ 	fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+ 	}
+
+ location ~ /\.ht {
+ 			deny all;
+ 	}
+
+ 	error_log /var/log/nginx/jarkom_error.log;
+ 	access_log /var/log/nginx/jarkom_access.log;
+ }
+```
+- Then we make a symlink with the command  `ln -s /etc/nginx/sites-available/jarkomm /etc/nginx/sites-enabled`
+- Afterwards we reload nginx with the commnad `service nginx restart`
+- We can test if the congiguration is correct with the command `nginx -t` but not in this case as it is in the `.bashrc` file so it will be run whenever the machine is restarted
 
 ## Number 10
 ```
