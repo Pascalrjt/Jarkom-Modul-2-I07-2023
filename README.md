@@ -331,7 +331,7 @@ with `2.62.10` being the reverse of our IP `10.62.2`.
 ```sh
 echo nameserver 192.168.122.1 > /etc/resolv.conf # to allow internet connection
 apt update
-apt-get install dnsutils -y
+apt install dnsutils -y
 echo nameserver 10.62.2.2 > /etc/resolv.conf    # to run the ping the YudhistiraDNSMaster
 ```
 -  We are then able to test it by running `host -t PTR 10.62.2.2`
@@ -629,6 +629,61 @@ nginx -t # To check if configuration is properly done once completed
 Aditional notes:
 - Sadly we failed the deployment as when ran `lynx 10.62.2.2:80` it resulted in `ERROR 403`
 
+<h3>REVISION</h3>
+
+## Number 9
+
+- We open `AbimanyuWebServer`, `PrabukusumaWebServer`, `WisanggeniWebServer`
+- `mkdir /var/www/arjuna.I07`  
+- `nano /var/www/arjuna.I07/index.php`
+
+```php
+<?php
+$hostname = gethostname();
+$date = date('Y-m-d H:i:s');
+$php_version = phpversion();
+$username = get_current_user();
+
+
+echo "Hello World!<br>";
+echo "I'm: $username<br>";
+echo "I'm in: $hostname<br>";
+echo "PHP Version: $php_version<br>";
+echo "Date: $date<br>";
+?>
+```
+- We alter the default config with `nano /etc/nginx/sites-available/default`
+```php
+server {
+	listen 8002; Change according to each webserver
+
+	root /var/www/arjuna.I07;
+
+	index index.php index.html index.htm;
+	server_name _;
+
+	location / {
+		try_files $uri $uri/ /index.php?$query_string;
+	}
+
+	# pass PHP scripts to FastCGI server
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+
+	error_log /var/log/nginx/I07_error.log;
+	access_log /var/log/nginx/I07_access.log;
+}
+```
+
+- We then run `service php7.2-fpm start`
+- And then `service nginx restart`
+
 ## Number 10
 ```
 Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan server_name pada soal nomor 1. Untuk melakukan pengecekan akses alamat web tersebut kemudian pastikan worker yang digunakan untuk menangani permintaan akan berganti ganti secara acak. Untuk webserver di masing-masing worker wajib berjalan di port 8001-8003. Contoh
@@ -638,11 +693,60 @@ Kemudian gunakan algoritma Round Robin untuk Load Balancer pada Arjuna. Gunakan 
 ```
 
 Solution:<br>
-
+- We first install install `lynx`, `apache`, `libapache2-mod-php7.0`
 ```sh
+apt install lynx -y
+apt install apache2 -y
+apt install libapache2-mod-php7.0 -y
+```
+- we copy `000-default.conf ` file into  `000-default-8002.conf` by first `cd /etc/apache2/sites-available` and then `cp 000-default.conf default-8002.conf`
+
+- We then open `000-default-8002.conf` with `nano 000-default-8002.conf` and then change Virtualhost from `80` to `8002`
+
+- We also change the Document Root from `/var/www/html` to `/var/www/web-8002`
+
+- We also add `port 8002` in `ports.conf` in `/etc/apache2` with `Add Listen 8002`
+
+- We can activate `000-default-8002.conf` configuration using `a2ensite` with `a2ensite default-8002.conf`
+
+- We then restart apache with `service apache restart`
+
+
+<!-- - We also create a new directory in `var/www` and name it `web-8002`. We `cd` into the new directory and make a new file `index.php` with `nano index.php`
+
+- In `index.php` we add
+```php
+<?php
+    echo "Im running on port 8002";
+?>
 ```
 
-Explanation:
+- Finally we can run it with `lynx http://10.62.3.3:8002` -->
+
+- We redo these steps with `Wisanggeni` and `Prabakusuma` with the ports `8001` and `8003` respectively
+
+- We then go to ArjunaLoadBalancer and run `nano /etc/nginx/sites-available/default`
+
+- We then add this to the `default` config 
+```sh
+upstream myweb  {
+	server 192.198.3.3:8003; #IP Wisanggeni
+	server 192.198.3.4:8002; #IP Prabukusuma
+	server 192.198.3.5:8001; #IP Abimanyu
+}
+
+server {
+	listen 80;
+	server_name arjuna.I07.com;
+
+	location / {
+		proxy_pass http://myweb;
+	}
+}
+```
+
+- Finally We can run `service nginx restart` and `service bind9 restart`
+
 
 ### Number 11
 ```
