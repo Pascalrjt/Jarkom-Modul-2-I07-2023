@@ -754,8 +754,63 @@ Selain menggunakan Nginx, lakukan konfigurasi Apache Web Server pada worker Abim
 ```
 
 Solution:<br>
+- We open `YudhistiraDNSMaster`
+- `nano /etc/bind/abimanyu.I07.conf`
+```sh
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.I07.com. root.abimanyu.I07.com. (
+			      2		; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.I07.com.
+@       IN      A       10.62.3.3     	; IP Abimanyu
+www     IN	CNAME	abimanyu.I07.com.
+parikesit IN	A	10.62.3.3     	; IP Abimanyu
+ns1	IN	A	10.62.2.3 	; IP Werk
+baratayuda IN	NS	ns1
+```
+- Go to `AbimanyuWebServer`
+- `echo nameserver 192.168.122.1 > /etc/resolv.conf`
+- `apt-get update` and `apt-get install apache2`
+- `apt-get install python3-pip` and `pip3 install gdown`
+- `cd /var/www`
+- Download the zip file
+```sh
+; abimanyu.I07.com
+gdown 1a4V23hwK9S7hQEDEcv9FL14UkkrHc-Zc
+unzip abimanyu.yyy.com.zip
+rm abimanyu.yyy.com.zip
+mv abimanyu.yyy.com abimanyu.I07
+
+; parikesit.abimanyu.I07.com
+gdown 1LdbYntiYVF_NVNgJis1GLCLPEGyIOreS
+unzip parikesit.abimanyu.yyy.com.zip
+rm parikesit.abimanyu.yyy.com.zip
+mv parikesit.abimanyu.yyy.com parikesit.abimanyu.I07
+
+; rjp.baratayuda.abimanyu.yyy.com
+gdown 1pPSP7yIR05JhSFG67RVzgkb-VcW9vQO6
+unzip rjp.baratayuda.abimanyu.yyy.com.zip
+rm rjp.baratayuda.abimanyu.yyy.com.zip
+mv rjp.baratayuda.abimanyu.yyy.com rjp.baratayuda.abimanyu.I07
+```
+- `nano /etc/apache2/sites-available/000-default.conf`
 
 ```sh
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	ServerName abimanyu.i09.com
+	ServerAlias www.abimanyu.i09.com
+	DocumentRoot /var/www/abimanyu.i09
+	
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 ```
 
 ### Number 12
