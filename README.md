@@ -820,7 +820,19 @@ Setelah itu ubahlah agar url www.abimanyu.yyy.com/index.php/home menjadi www.abi
 
 Solution:<br>
 
+- `nano /var/www/abimanyu.I07/.htaccess`
 ```sh
+RewriteEngine On
+RewriteRule ^index\.php/home$ /home [R=301,L]
+```
+-`a2enmod rewrite`
+- `nano /etc/apache2/sites-available/000-default.conf`
+```sh
+<Directory /var/www/abimanyu.I07>
+	Options +Indexes +FollowSymLinks -Multiviews
+	AllowOverride All
+        Require all granted
+</Directory>
 ```
 
 ### Number 13
@@ -829,9 +841,15 @@ Selain itu, pada subdomain www.parikesit.abimanyu.yyy.com, DocumentRoot disimpan
 ```
 
 Solution:<br>
-
+- `nano /etc/apache2/sites-available/parikesit.abimanyu.i09.conf`
 ```sh
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName parikisit.abimanyu.I07.com
+    DocumentRoot /var/www/parikesit.abimanyu.I07
+</VirtualHost>
 ```
+- `a2ensite parikesit.abimanyu.i09.conf`
 
 ### Number 14
 ```
@@ -839,8 +857,21 @@ Pada subdomain tersebut folder /public hanya dapat melakukan directory listing s
 ```
 
 Solution:<br>
-
+- `nano /etc/apache2/sites-available/parikesit.abimanyu.I07.conf`
 ```sh
+<VirtualHost *:80>
+ 	ServerAdmin webmaster@localhost
+    	ServerName parikisit.abimanyu.I07.com
+    	DocumentRoot /var/www/parikesit.abimanyu.I07
+
+	<Directory /var/www/parikesit.abimanyu.I07/public>
+        	Options +Indexes
+    	</Directory>
+
+    	<Directory /var/www/parikesit.abimanyu.I07/secret>
+       		Options -Indexes
+    	</Directory>
+</VirtualHost>
 ```
 
 ### Number 15
@@ -849,8 +880,30 @@ Buatlah kustomisasi halaman error pada folder /error untuk mengganti error kode 
 ```
 
 Solution:<br>
-
+- `nano /etc/apache2/sites-available/parikesit.abimanyu.I07.conf`
 ```sh
+<VirtualHost *:80>
+ 	ServerAdmin webmaster@localhost
+    	ServerName parikisit.abimanyu.I07.com
+    	DocumentRoot /var/www/parikesit.abimanyu.I07
+
+	<Directory /var/www/parikesit.abimanyu.I07/public>
+        	Options +Indexes
+    	</Directory>
+
+    	<Directory /var/www/parikesit.abimanyu.I07/secret>
+       		Options -Indexes
+    	</Directory>
+	
+	<Directory /var/www/parikesit.abimanyu.I07/error>
+    		Options FollowSymLinks
+    		AllowOverride None
+    		Require all granted
+	</Directory>
+
+	ErrorDocument 404 /error/404.html
+	ErrorDocument 403 /error/403.html
+</VirtualHost>
 ```
 
 ### Number 16
@@ -860,8 +913,32 @@ www.parikesit.abimanyu.yyy.com/js
 ```
 
 Solution:<br>
-
+- `nano /etc/apache2/sites-available/parikesit.abimanyu.I07.conf`
 ```sh
+<VirtualHost *:80>
+ 	ServerAdmin webmaster@localhost
+    	ServerName parikisit.abimanyu.I07.com
+    	DocumentRoot /var/www/parikesit.abimanyu.I07
+
+	<Directory /var/www/parikesit.abimanyu.I07/public>
+        	Options +Indexes
+    	</Directory>
+
+    	<Directory /var/www/parikesit.abimanyu.I07/secret>
+       		Options -Indexes
+    	</Directory>
+	
+	<Directory /var/www/parikesit.abimanyu.I07/error>
+    		Options FollowSymLinks
+    		AllowOverride None
+    		Require all granted
+	</Directory>
+	
+	Alias "/js" "/var/www/parikesit.abimanyu.I07/public/js"
+
+	ErrorDocument 404 /error/404.php
+	ErrorDocument 403 /error/403.php
+</VirtualHost>
 ```
 
 ### Number 17
@@ -870,8 +947,46 @@ Agar aman, buatlah konfigurasi agar www.rjp.baratayuda.abimanyu.yyy.com hanya da
 ```
 
 Solution:<br>
-
+- Go to DNS Slave Werkudara to set up subdomain rjp in Abimanyu
+- `nano /etc/bind/delegasi/baratayuda.abimanyu.I07.com`
 ```sh
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     baratayuda.abimanyu.I07.com. root.baratayuda.abimanyu.I07.com. (
+		     2023101112		; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      baratayuda.abimanyu.I07.com.
+@       IN      A       10.62.2.3 ; IP Werkudara
+www	IN      CNAME   baratayuda.abimanyu.I07.com.
+rjp	IN      A	10.62.3.3 ; IP Abimanyu
+```
+- Go to Abimanyu `nano /etc/apache2/sites-available/rjp.baratayuda.abimanyu.I07.conf`
+```sh
+<VirtualHost *:14000>
+    	ServerAdmin webmaster@localhost
+	ServerName rjp.baratayuda.abimanyu.I07.com
+    	ServerAlias www.rjp.baratayuda.abimanyu.I07.com
+   	DocumentRoot /var/www/rjp.baratayuda.abimanyu.I07
+</VirtualHost>
+
+<VirtualHost *:14400>
+	ServerAdmin webmaster@localhost
+	ServerName rjp.baratayuda.abimanyu.I07.com
+    	ServerAlias www.rjp.baratayuda.abimanyu.I07.com
+   	DocumentRoot /var/www/rjp.baratayuda.abimanyu.I07
+</VirtualHost>
+```
+- `a2ensite rjp.baratayuda.abimanyu.I07.conf`
+- Add ports in `/etc/apache2.ports.conf`
+```sh
+Listen 14000
+Listen 14400
 ```
 
 ### Number 18
@@ -880,8 +995,42 @@ Untuk mengaksesnya buatlah autentikasi username berupa “Wayang” dan password
 ```
 
 Solution:<br>
-
+- `nano /var/www/rjp.baratayuda.abimanyu.i09/.htaccess`
 ```sh
+AuthType Basic
+AuthName "Authentication Required"
+AuthUserFile /etc/apache2/.htpasswd
+Require user Wayang
+```
+- `htpasswd -c /etc/apache2/.htpasswd Wayang`
+- Input "baratayudad14" as the password
+- `nano /etc/apache2/sites-available/rjp.baratayuda.abimanyu.I07.conf`
+```sh
+<VirtualHost *:14000>
+	ServerAdmin webmaster@localhost
+	ServerName rjp.baratayuda.abimanyu.I07.com
+    	ServerAlias www.rjp.baratayuda.abimanyu.I07.com
+   	DocumentRoot /var/www/rjp.baratayuda.abimanyu.I07
+	
+	<Directory /var/www/rjp.baratayuda.abimanyu.I07>
+        	Options Indexes FollowSymLinks
+        	AllowOverride All
+        	Require all granted
+    	</Directory>
+</VirtualHost>
+
+<VirtualHost *:14400>
+	ServerAdmin webmaster@localhost
+	ServerName rjp.baratayuda.abimanyu.I07.com
+    	ServerAlias www.rjp.baratayuda.abimanyu.I07.com
+   	DocumentRoot /var/www/rjp.baratayuda.abimanyu.I07
+	
+	<Directory /var/www/rjp.baratayuda.abimanyu.I07>
+        	Options Indexes FollowSymLinks
+        	AllowOverride All
+        	Require all granted
+    	</Directory>
+</VirtualHost>
 ```
 
 ### Number 19
@@ -890,8 +1039,26 @@ Buatlah agar setiap kali mengakses IP dari Abimanyu akan secara otomatis dialihk
 ```
 
 Solution:<br>
-
+- Go to `YudhistraDNSMaster`
+- `nano /etc/bind/abimanyu/abimanyu.i09.com`
 ```sh
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     abimanyu.I07.com. root.abimanyu.I07.com. (
+		     	      2		; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      abimanyu.I07.com.
+@       IN      A       10.62.3.3	; IP Abimanyu
+www     IN	CNAME	abimanyu.i09.com.
+parikesit IN	A	100.62.3.3	; IP Abimanyu
+ns1	IN	A	10.62.2.3	; IP Werk
+baratayuda IN	NS	ns1
+10.62.3.3 IN	CNAME	www.abimanyu.I07.com.
 ```
 
 ### Number 20
@@ -900,6 +1067,41 @@ Karena website www.parikesit.abimanyu.yyy.com semakin banyak pengunjung dan bany
 ```
 
 Solution:<br>
-
+- Go to `AbimanyuWebServer`
+- `nano /var/www/parikesit.abimanyu.I07/.htaccess`
 ```sh
+RewriteEngine On
+RewriteRule .*abimanyu.* /abimanyu.png [R,L]
+```
+- `nano /etc/apache2/sites-available/parikesit.abimanyu.I07.conf`
+```sh
+<VirtualHost *:80>
+ 	ServerAdmin webmaster@localhost
+    	ServerName parikisit.abimanyu.I07.com
+    	DocumentRoot /var/www/parikesit.abimanyu.I07
+
+	<Directory /var/www/parikesit.abimanyu.I07/public>
+        	Options +Indexes
+    	</Directory>
+
+    	<Directory /var/www/parikesit.abimanyu.I07/secret>
+       		Options -Indexes
+    	</Directory>
+	
+	<Directory /var/www/parikesit.abimanyu.I07/error>
+    		Options FollowSymLinks
+    		AllowOverride None
+    		Require all granted
+	</Directory>
+	
+	<Directory /var/www/parikesit.abimanyu.I07>
+		Options +Indexes +FollowSymLinks -Multiviews
+		AllowOverride All
+	</Directory>
+
+	Alias "/js" "/var/www/parikesit.abimanyu.I07/public/js"
+
+	ErrorDocument 404 /error/404.php
+	ErrorDocument 403 /error/403.php
+</VirtualHost>
 ```
